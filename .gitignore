@@ -1,3 +1,8 @@
 .env
 node_modules/
 photos.csv
+product.csv
+skus.csv
+features.csv
+styles.csv
+related.csv

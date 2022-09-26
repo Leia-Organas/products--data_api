@@ -36,6 +36,19 @@ let styleSchema = mongoose.Schema(
   }
 )
 
+let style2Schema = mongoose.Schema(
+  {
+    product_id: String,
+    style_id: Number,
+    name: String,
+    original_price: String,
+    sale_price: String,
+    "default?": Boolean,
+    photos:mongoose.ObjectId,
+    skus: mongoose.ObjectId
+  }
+)
+
 let photoSchema = mongoose.Schema({
   styleId: Number,
   photos: Array
@@ -50,6 +63,7 @@ const ProdModel = mongoose.model('ProdModel', prodSchema);
 const FeatureModel = mongoose.model('FeatureModel', featureSchema);
 const RelModel = mongoose.model('RelModel', relatedSchema);
 const StyleModel = mongoose.model('StyleModel', styleSchema);
+const Style2Model = mongoose.model('Style2Model', styleSchema);
 const PhotoModel = mongoose.model('PhotoModel', photoSchema);
 const SkuModel = mongoose.model('SkuModel', skuSchema);
 
@@ -58,6 +72,7 @@ module.exports = {
   FeatureModel,
   RelModel,
   StyleModel,
+  Style2Model,
   PhotoModel,
   SkuModel
 }

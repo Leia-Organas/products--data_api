@@ -43,12 +43,12 @@ async function ImportStyle() {
     // }
   }
 
-  console.log('finished styleBasics')
+  // console.log('finished style')
 }
 
 // ImportStyle();
 
-async function addPhotosAndSkus () {
+async function addPhotos() {
   await mongoose.connect('mongodb://localhost:27017/sdc')
 
   const styleParser = fs.createReadStream('./csv_files/styles.csv')
@@ -62,7 +62,7 @@ async function addPhotosAndSkus () {
   for await (const style of styleParser) {
     let photos = await PhotoModel.findOne({styleId: Number(style.id)})
 
-      let styles = await StyleModel.findOneAndUpdate({style_id: Number(style.id)}, {photos: photos? photos.photos : []})
+      let styles = await StyleModel.findOneAndUpdate({style_id: Number(style.id)}, {'photos': photos? photos.photos : []})
 
 
 
@@ -76,5 +76,35 @@ async function addPhotosAndSkus () {
 
 }
 
-// addPhotosAndSkus()
+// addPhotos()
 // killed - took too long
+
+async function addPhotosAndSkus  () {
+  await mongoose.connect('mongodb://localhost:27017/sdc')
+
+
+     count = 0;
+
+      for await (const doc of StyleModel.find()) {
+        let photos = await PhotoModel.findOne({styleId: doc.style_id})
+        let skus = await SkuModel.findOne({styleId: doc.style_id})
+        doc.photos = photos ? photos.photos : [];
+        doc.skus = skus ? skus.skus : {};
+        await doc.save();
+        // console.log(doc)
+        count++
+        if(count === 1){
+          console.log('began')
+        }
+        if (count === 100000) {
+          count = 0;
+          console.log("100k iterated")
+        }
+
+      }
+
+      console.log('added photos and skus')
+}
+
+// addPhotosAndSkus()
+//took too long

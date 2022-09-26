@@ -33,42 +33,47 @@ app.get('/products/:product_id', async (req, res) => {
 app.get('/products/:product_id/related', async (req, res) => {
   let related = await RelModel.findOne({ product_id: req.params.product_id }, 'related');
   let body = related['related']
-  console.log(body)
   return res.status(200).json(body)
 })
 
 app.get('/products/:product_id/styles', async (req, res) => {
-  let results = await StyleModel.aggregate(
-    [
-      {$match:{
-        product_id: req.params.product_id
-        }
-      },
-      { $lookup: {
-        from: 'photomodels',
-        localField: "style_id",
-        foreignField: "styleId",
-        as: "photos"
-        }
-      },
-      { $lookup: {
-        from: 'skumodels',
-        localField: "style_id",
-        foreignField: "styleId",
-        as: "skus"
-        }
-      }
-    ], 'photos skus')
+  // let results = await StyleModel.aggregate(
+  //   [
+  //     {$match:{
+  //       product_id: req.params.product_id
+  //       }
+  //     },
+  //     { $lookup: {
+  //       from: 'photomodels',
+  //       localField: "style_id",
+  //       foreignField: "styleId",
+  //       as: "photos"
+  //       }
+  //     },
+  //     { $lookup: {
+  //       from: 'skumodels',
+  //       localField: "style_id",
+  //       foreignField: "styleId",
+  //       as: "skus"
+  //       }
+  //     }
+  //   ], 'photos skus')
 
-    styles = results.map(result => {
-      result.photos = result.photos[0].photos;
-      result.skus = result.skus[0].skus;
+  //   styles = results.map(result => {
+  //     result.photos = result.photos[0].photos;
+  //     result.skus = result.skus[0].skus;
 
-      return result;
-    })
+  //     return result;
+  //   })
 
 
+// return res.status(200).json(styles)
+//to slow
+
+let styles = await StyleModel.find({product_id: req.params.product_id})
 return res.status(200).json(styles)
+// couldnt load all photos and skus to have this work properly
+
 })
 
 const start = async () => {
